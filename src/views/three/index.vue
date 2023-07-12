@@ -2,7 +2,7 @@
  * @Author: new-wang
  * @Date: 2023-07-07 13:56:33
  * @LastEditors: new-wang
- * @LastEditTime: 2023-07-10 16:49:14
+ * @LastEditTime: 2023-07-12 14:18:25
  * @Description: threejs的学习使用
 -->
 <template>
@@ -186,10 +186,10 @@ gui.domElement.style.width = '500px'
 // gui改变threejs光照强度测试
 // 先大概给一个经验值，然后通过gui在这个大概值的基础上下浮动可视化调试
 // 光照强度属性.intensity
-console.log('ambient.intensity',ambient.intensity);
+// console.log('ambient.intensity',ambient.intensity);
 // 通过GUI改变mesh.position对象的xyz属性
-gui.add(ambient, 'intensity', 0, 2.0).name('环境光强度').step(0.2);
-gui.add(directionalLight, 'intensity', 0, 2.0).name('平行光强度');
+// gui.add(ambient, 'intensity', 0, 2.0).name('环境光强度').step(0.2);
+// gui.add(directionalLight, 'intensity', 0, 2.0).name('平行光强度');
 
 // gui改变threejs模型位置测试
 // mesh.position是JavaScript对象，具有x、y、z属性,这三个属性分别表示模型的xyz坐标，
@@ -241,17 +241,48 @@ function render() {
 render();
 
 
+// // 改变颜色值
+// const obj = {
+//     color:0x00ffff,
+// };
+// // .addColor()生成颜色值改变的交互界面
+// gui.addColor(obj, 'color').onChange(function(value){
+//     mesh.material.color.set(value);
+// }).name('材质颜色')
 
+
+// gui 交互分组
+// 创建材质子菜单
+const matFolder = gui.addFolder('材质');
+matFolder.close();
 
 // 改变颜色值
 const obj = {
     color:0x00ffff,
+    specular:0x00ffff
 };
+
 // .addColor()生成颜色值改变的交互界面
-gui.addColor(obj, 'color').onChange(function(value){
+matFolder.addColor(obj, 'color').onChange(function(value){
     mesh.material.color.set(value);
 }).name('材质颜色')
+// 材质高光颜色specular
+matFolder.addColor(obj, 'specular').onChange(function(value){
+    material.specular.set(value);
+}).name('高光颜色');
 
+
+// 环境光子菜单
+const ambientFolder = gui.addFolder('光源');
+// 环境光强度
+ambientFolder.add(ambient, 'intensity',0,2).name("环境光强度");
+ambientFolder.add(directionalLight,'intensity',0,2).name('平行光强度')
+ambientFolder.close();
+// 嵌套子菜单
+const lightPosition = ambientFolder.addFolder('平行光位置')
+lightPosition.add(directionalLight.position, 'x',-400,400);
+lightPosition.add(directionalLight.position, 'y',-400,400);
+lightPosition.add(directionalLight.position, 'z',-400,400);
 
 
 onMounted(()=>{
