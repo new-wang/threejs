@@ -1,0 +1,208 @@
+<!--
+ * @Author: new-wang
+ * @Date: 2023-07-12 15:46:01
+ * @LastEditors: new-wang
+ * @LastEditTime: 2023-07-13 17:15:53
+ * @Description: 
+-->
+<template>
+    <div>
+        <div id="geometry"></div>
+    </div>
+</template>
+
+<script setup>
+import { onMounted } from 'vue';
+import { Scene,BoxGeometry,MeshBasicMaterial,
+    MeshPhongMaterial,AmbientLight,DirectionalLight,
+    Mesh,PerspectiveCamera, WebGLRenderer, AxesHelper,
+    SphereGeometry,CylinderGeometry,PlaneGeometry,
+    CircleGeometry,DoubleSide, BufferGeometry,BufferAttribute, 
+    PointsMaterial,Points,LineBasicMaterial,Line,
+    LineLoop,LineSegments,Vector3, MeshLambertMaterial,
+} from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const scene = new Scene()
+
+// threejs的长方体BoxGeometry、球体SphereGeometry
+// 等几何体都是基于BufferGeometry (opens new window)类构建的，
+// BufferGeometry是一个没有任何形状的空几何体，
+// 你可以通过BufferGeometry自定义任何几何形状，
+// 具体一点说就是定义顶点数据
+
+// 创建一个空的几何体对象
+const geometry = new BufferGeometry()
+
+// 通过js类型化数组定义几何体顶点数据
+// const vertices = new Float32Array([
+//     0, 0, 0, //顶点1坐标
+//     50, 0, 0, //顶点2坐标
+//     0, 100, 0, //顶点3坐标
+//     0, 0, 10, //顶点4坐标
+//     0, 0, 100, //顶点5坐标
+//     50, 0, 10, //顶点6坐标
+// ])
+
+// 矩形几何体顶点坐标 
+// 注意三角形的正反面问题：保证矩形平面两个三角形的正面是一样的，
+// 也就是从一个方向观察，两个三角形都是逆时针或顺时针。
+const vertices = new Float32Array([
+    0, 0, 0, //顶点1坐标
+    80, 0, 0, //顶点2坐标
+    80, 80, 0, //顶点3坐标
+
+    // 0, 0, 0, //顶点4坐标   和顶点1位置相同
+    // 80, 80, 0, //顶点5坐标  和顶点3位置相同
+    0, 80, 0, //顶点6坐标
+]);
+
+// js类型化数组Uint16Array创建顶点索引.index数据
+const indexes = new Uint16Array([
+    // 下面索引值对应顶点位置数据中的顶点坐标
+    0, 1, 2, 0, 2, 3,
+])
+
+// 矩形平面，无索引，两个三角形，6个顶点
+// 每个顶点的法线数据和顶点位置数据一一对应
+// const normals = new Float32Array([
+//     0, 0, 1, //顶点1法线( 法向量 )
+//     0, 0, 1, //顶点2法线
+//     0, 0, 1, //顶点3法线
+//     0, 0, 1, //顶点4法线
+//     0, 0, 1, //顶点5法线
+//     0, 0, 1, //顶点6法线
+// ]);
+
+// 矩形平面，有索引，两个三角形，有2个顶点重合，有4个顶点
+// 每个顶点的法线数据和顶点位置数据一一对应
+const normals = new Float32Array([
+    0, 0, 1, //顶点1法线( 法向量 )
+    0, 0, 1, //顶点2法线
+    0, 0, 1, //顶点3法线
+    0, 0, 1, //顶点4法线
+]);
+
+// 通过threejs的属性缓冲区对象
+// BufferAttribute (opens new window)表示threejs几何体顶点数据。
+// 创建属性缓冲区对象
+//3个为一组，表示一个顶点的xyz坐标
+const attribue = new BufferAttribute(vertices,3)
+
+// 有了数据，开始设置顶点数据
+// 设置几何体attributes属性的位置属性
+geometry.attributes.position = attribue;
+
+// 索引数据赋值给几何体的index属性
+geometry.index = new BufferAttribute(indexes, 1); //1个为一组
+
+// 设置几何体的顶点法线属性.attributes.normal
+geometry.attributes.normal = new BufferAttribute(normals, 3); 
+
+
+// 点渲染模式
+// const material = new PointsMaterial({
+//     color:0xffff00,
+//     size:10.0, //点对象像素尺寸
+//     // side: DoubleSide
+// })
+// const points = new Points(geometry, material); //点模型对象
+// scene.add(points) //渲染为点
+
+// 线材质对象
+// const material = new LineBasicMaterial({
+//     color:0xff0000,
+//     linewidth: 1,
+//     linecap: 'round', //ignored by WebGLRenderer
+// 	linejoin:  'round'
+// })
+// const points = [];
+// points.push( new Vector3( - 10, 0, 0 ) );
+// points.push( new Vector3( 0, 10, 0 ) );
+// points.push( new Vector3( 10, 0, 0 ) );
+// geometry.setFromPoints(points)
+
+// 矩形平面
+// const geometry2 = new PlaneGeometry(50,150)
+//矩形几何体PlaneGeometry的参数3,4表示细分数，默认是1,1
+// const geometry = new THREE.PlaneGeometry(100,50,1,1);
+// 把一个矩形分为2份，每个矩形2个三角形，总共就是4个三角形
+// const geometry2 = new PlaneGeometry(100,50,2,1);
+// 把一个矩形分为4份，每个矩形2个三角形，总共就是8个三角形
+// const geometry2 = new PlaneGeometry(100,50,2,2);
+
+// 长方体
+// const geometry3 = new BoxGeometry(50,100,50)
+
+// 球体SphereGeometry参数2、3分别代表宽、高度两个方向上的细分数，默认32,16，具体多少以你所用版本为准
+// const geometry4 = new SphereGeometry( 50, 32, 16 );
+// 如果球体细分数比较低，表面就不会那么光滑
+const geometry4 = new SphereGeometry( 50, 8, 8 );
+
+// 查看几何体顶点位置和索引数据
+// console.log('几何体',geometry2);
+// console.log('顶点位置数据',geometry2.attributes.position);
+// console.log('顶点索引数据',geometry2.index);
+
+
+// 使用受光照影响的材质，几何体BufferGeometry需要定义顶点法线数据
+const material = new MeshLambertMaterial({
+    color:0xff0000,
+    linewidth: 1,
+    linecap: 'round', //ignored by WebGLRenderer
+	linejoin:  'round',
+    side:DoubleSide,
+    wireframe:true,//线条模式渲染mesh对应的三角形数据
+})
+
+// 创建线模型对象
+// const line = new Line(geometry, material);
+// 闭合线条
+// const line = new LineLoop(geometry, material); 
+//非连续的线条
+// const line = new LineSegments(geometry, material);
+// scene.add(line)
+
+const mesh = new Mesh(geometry4,material);
+scene.add(mesh) //会渲染为面
+
+// 平行光
+const directionalLight = new DirectionalLight(0xffffff, 1);
+directionalLight.position.set(40, 40, 400);
+directionalLight.target = mesh;
+scene.add(directionalLight);
+
+const camera = new PerspectiveCamera(100,width/height,0.1,2000)
+camera.position.set(500, 500, 500)
+camera.lookAt(0, 0, 0)
+
+const axesHelper = new AxesHelper(500)
+scene.add(axesHelper)
+
+
+const renderer = new WebGLRenderer({
+    antialias:true
+})
+renderer.setSize(width,height)
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setClearColor(0x444444,1)
+renderer.render(scene,camera)
+
+
+
+const controls = new OrbitControls(camera,renderer.domElement)
+controls.addEventListener('change', function () {
+    renderer.render(scene, camera); //执行渲染操作
+});
+
+onMounted(()=>{
+    document.getElementById('geometry').appendChild(renderer.domElement);
+})
+</script>
+
+<style lang="scss" scoped>
+
+</style>

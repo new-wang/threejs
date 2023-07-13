@@ -25,7 +25,7 @@ const router = createRouter({
     },
     {
       path:'/geometry',
-      name:'three',
+      name:'geometry',
       component:() => import('../views/three/geometry.vue')
     }
   ]
