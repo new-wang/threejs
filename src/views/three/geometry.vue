@@ -2,7 +2,7 @@
  * @Author: new-wang
  * @Date: 2023-07-12 15:46:01
  * @LastEditors: new-wang
- * @LastEditTime: 2023-07-13 17:15:53
+ * @LastEditTime: 2023-07-19 17:04:11
  * @Description: 
 -->
 <template>
@@ -135,12 +135,12 @@ geometry.attributes.normal = new BufferAttribute(normals, 3);
 // const geometry2 = new PlaneGeometry(100,50,2,2);
 
 // 长方体
-// const geometry3 = new BoxGeometry(50,100,50)
+const geometry3 = new BoxGeometry(50,100,50)
 
 // 球体SphereGeometry参数2、3分别代表宽、高度两个方向上的细分数，默认32,16，具体多少以你所用版本为准
 // const geometry4 = new SphereGeometry( 50, 32, 16 );
 // 如果球体细分数比较低，表面就不会那么光滑
-const geometry4 = new SphereGeometry( 50, 8, 8 );
+// const geometry4 = new SphereGeometry( 50, 8, 8 );
 
 // 查看几何体顶点位置和索引数据
 // console.log('几何体',geometry2);
@@ -166,7 +166,7 @@ const material = new MeshLambertMaterial({
 // const line = new LineSegments(geometry, material);
 // scene.add(line)
 
-const mesh = new Mesh(geometry4,material);
+const mesh = new Mesh(geometry3,material);
 scene.add(mesh) //会渲染为面
 
 // 平行光
@@ -197,6 +197,51 @@ const controls = new OrbitControls(camera,renderer.domElement)
 controls.addEventListener('change', function () {
     renderer.render(scene, camera); //执行渲染操作
 });
+
+// 渲染循环
+function render() {
+    // 几何体绕着x轴旋转45度
+    // geometry4.rotateX(Math.PI / 4);
+
+    geometry3.rotateX(Math.PI / 40);
+
+
+    // 几何体沿着x轴平移50
+    // geometry.translate(50, 0, 0);
+    // 几何体xyz三个方向都放大2倍
+    // geometry.scale(2, 2, 2);
+
+    
+    renderer.render(scene, camera); //执行渲染操作
+    requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
+}
+render();
+
+const v3 = new Vector3(0,0,0);
+console.log('v3', v3);
+v3.set(10,0,0);//set方法设置向量的值
+v3.x = 100;//访问x、y或z属性改变某个分量的值
+console.log(v3)
+console.log('position',mesh.position)
+// mesh.position.set(80,2,10);
+
+// 等价于mesh.position = mesh.position + 100;
+// mesh.translateX(100);//沿着x轴正方向平移距离100
+
+// 沿着Z轴负方向平移距离50
+// mesh.translateZ(-50);
+
+//向量Vector3对象表示方向
+const axis = new Vector3(1, 1, 1);
+axis.normalize(); //向量归一化
+//沿着axis轴表示方向平移100
+mesh.translateOnAxis(axis, 200);
+
+// x轴方向放大2倍
+// mesh.scale.x = 2.0;
+
+// 网格模型xyz方向分别缩放0.5,1.5,2倍
+// mesh.scale.set(0.5, 1.5, 2)
 
 onMounted(()=>{
     document.getElementById('geometry').appendChild(renderer.domElement);
