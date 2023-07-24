@@ -2,7 +2,7 @@
  * @Author: new-wang
  * @Date: 2023-07-12 15:46:01
  * @LastEditors: new-wang
- * @LastEditTime: 2023-07-19 17:04:11
+ * @LastEditTime: 2023-07-24 14:00:41
  * @Description: 
 -->
 <template>
@@ -20,6 +20,7 @@ import { Scene,BoxGeometry,MeshBasicMaterial,
     CircleGeometry,DoubleSide, BufferGeometry,BufferAttribute, 
     PointsMaterial,Points,LineBasicMaterial,Line,
     LineLoop,LineSegments,Vector3, MeshLambertMaterial,
+    Euler,Color
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -198,31 +199,70 @@ controls.addEventListener('change', function () {
     renderer.render(scene, camera); //执行渲染操作
 });
 
+
+// // 创建一个颜色对象
+// const color = new Color();//默认是纯白色0xffffff。
+// console.log('查看颜色对象结构',color);//可以查看rgb的值
+
+// 查看Color对象设置0x00ff00对应的的.r、.g、.b值
+const color = new Color(0x00ff00);
+console.log('查看颜色对象结构',color);
+
+
+// 重置模型材质的颜色
+material.color.set(0x00ffff);
+
+
 // 渲染循环
 function render() {
     // 几何体绕着x轴旋转45度
     // geometry4.rotateX(Math.PI / 4);
 
-    geometry3.rotateX(Math.PI / 40);
-
-
+    // geometry3.rotateX(Math.PI / 40);
     // 几何体沿着x轴平移50
     // geometry.translate(50, 0, 0);
     // 几何体xyz三个方向都放大2倍
     // geometry.scale(2, 2, 2);
 
-    
+
     renderer.render(scene, camera); //执行渲染操作
     requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
 }
 render();
 
-const v3 = new Vector3(0,0,0);
-console.log('v3', v3);
-v3.set(10,0,0);//set方法设置向量的值
-v3.x = 100;//访问x、y或z属性改变某个分量的值
-console.log(v3)
-console.log('position',mesh.position)
+
+// 创建一个欧拉对象，表示绕着xyz轴分别旋转45度，0度，90度
+const Euler1 = new Euler( Math.PI/4,0, Math.PI/2);
+
+// 通过属性设置欧拉对象的三个分量值
+// const Euler = new THREE.Euler();
+// Euler.x = Math.PI/4;
+// Euler.y = Math.PI/2;
+// Euler.z = Math.PI/4;
+
+// console.log(Euler1)
+
+// //绕y轴的角度设置为60度
+// mesh.rotation.y += Math.PI/3;
+// //绕y轴的角度增加60度
+// mesh.rotation.y += Math.PI/3;
+
+// //绕y轴的角度减去60度
+// mesh.rotation.y -= Math.PI/3;
+
+
+// const axis = new Vector3(0,1,0);//向量axis
+// mesh.rotateOnAxis(axis,Math.PI/8); //绕axis轴旋转π/8
+
+
+
+// 三维向量Vector3 与 模型位置
+// const v3 = new Vector3(0,0,0);
+// console.log('v3', v3);
+// v3.set(10,0,0);//set方法设置向量的值
+// v3.x = 100;//访问x、y或z属性改变某个分量的值
+// console.log(v3)
+// console.log('position',mesh.position)
 // mesh.position.set(80,2,10);
 
 // 等价于mesh.position = mesh.position + 100;
@@ -232,10 +272,10 @@ console.log('position',mesh.position)
 // mesh.translateZ(-50);
 
 //向量Vector3对象表示方向
-const axis = new Vector3(1, 1, 1);
-axis.normalize(); //向量归一化
-//沿着axis轴表示方向平移100
-mesh.translateOnAxis(axis, 200);
+// const axis = new Vector3(1, 1, 1);
+// axis.normalize(); //向量归一化
+// //沿着axis轴表示方向平移100
+// mesh.translateOnAxis(axis, 200);
 
 // x轴方向放大2倍
 // mesh.scale.x = 2.0;
