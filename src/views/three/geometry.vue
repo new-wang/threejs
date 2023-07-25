@@ -2,7 +2,7 @@
  * @Author: new-wang
  * @Date: 2023-07-12 15:46:01
  * @LastEditors: new-wang
- * @LastEditTime: 2023-07-24 14:00:41
+ * @LastEditTime: 2023-07-25 14:50:09
  * @Description: 
 -->
 <template>
@@ -20,7 +20,7 @@ import { Scene,BoxGeometry,MeshBasicMaterial,
     CircleGeometry,DoubleSide, BufferGeometry,BufferAttribute, 
     PointsMaterial,Points,LineBasicMaterial,Line,
     LineLoop,LineSegments,Vector3, MeshLambertMaterial,
-    Euler,Color
+    Euler,Color, BackSide, FrontSide
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -212,6 +212,30 @@ console.log('查看颜色对象结构',color);
 // 重置模型材质的颜色
 material.color.set(0x00ffff);
 
+// 要使用平面PlaneGeometry测试
+// 材质面属性.side
+// material.side = BackSide; //背面可以看到
+// material.side = DoubleSide; //双面可见
+// material.side = FrontSide; //默认 单面可见
+
+// console.log('material.side',material.side);
+
+// 查看模型对象
+console.log('mesh',mesh);
+// 访问模型材质,并设置材质的颜色属性
+mesh.material.color.set(0xffff00);
+// 访问模型几何体,并平移几何体顶点数据
+mesh.geometry.translate(0,100,0);
+
+const mesh2 = mesh.clone()
+scene.add(mesh2);
+mesh2.position.x = 100;
+mesh2.material.color.set(0xff00ff);
+
+mesh2.geometry = mesh.geometry.clone();
+mesh2.material = mesh.material.clone();
+// 改变mesh2颜色，不会改变mesh的颜色
+mesh2.material.color.set(0xff0000);
 
 // 渲染循环
 function render() {
@@ -224,6 +248,8 @@ function render() {
     // 几何体xyz三个方向都放大2倍
     // geometry.scale(2, 2, 2);
 
+    mesh.rotateY(0.01)
+    mesh2.rotation.copy(mesh.rotation);
 
     renderer.render(scene, camera); //执行渲染操作
     requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
@@ -233,6 +259,18 @@ render();
 
 // 创建一个欧拉对象，表示绕着xyz轴分别旋转45度，0度，90度
 const Euler1 = new Euler( Math.PI/4,0, Math.PI/2);
+
+// 克隆
+const v2 = Euler1.clone()
+console.log(v2)
+
+
+// 复制
+const v1 = new Vector3(1, 2, 3);
+const v3 = new Vector3(4, 5, 6);
+//读取v1.x、v1.y、v1.z的赋值给v3.x、v3.y、v3.z
+v3.copy(v1);
+console.log(v3);
 
 // 通过属性设置欧拉对象的三个分量值
 // const Euler = new THREE.Euler();
