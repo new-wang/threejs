@@ -1,3 +1,10 @@
+/*
+ * @Author: new-wang
+ * @Date: 2023-07-07 13:53:58
+ * @LastEditors: new-wang
+ * @LastEditTime: 2023-07-28 10:45:17
+ * @Description: 
+ */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
@@ -27,6 +34,16 @@ const router = createRouter({
       path:'/geometry',
       name:'geometry',
       component:() => import('../views/three/geometry.vue')
+    },
+    {
+      path:'/level',
+      name:'level',
+      component:() => import('../views/three/level.vue')
+    },
+    {
+      path:'/texture',
+      name:'texture',
+      component:() => import('../views/three/texture.vue')
     }
   ]
 })
