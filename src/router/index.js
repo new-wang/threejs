@@ -2,7 +2,7 @@
  * @Author: new-wang
  * @Date: 2023-07-07 13:53:58
  * @LastEditors: new-wang
- * @LastEditTime: 2023-07-28 10:45:17
+ * @LastEditTime: 2023-07-31 16:31:26
  * @Description: 
  */
 import { createRouter, createWebHistory } from 'vue-router'
@@ -44,6 +44,11 @@ const router = createRouter({
       path:'/texture',
       name:'texture',
       component:() => import('../views/three/texture.vue')
+    },
+    {
+      path:'/gltf',
+      name:'gltf',
+      component:() => import('../views/three/gltf.vue')
     }
   ]
 })
