@@ -2,12 +2,20 @@
  * @Author: new-wang
  * @Date: 2023-07-12 15:46:01
  * @LastEditors: new-wang
- * @LastEditTime: 2023-10-08 16:47:40
+ * @LastEditTime: 2023-10-08 17:51:02
  * @Description: pbr材质
 -->
 <template>
     <div>
-        <div id="geometry"></div>
+        <!-- <div id="geometry"></div> -->
+
+        <!-- css布局 -->
+        <div style="height: 55px;background-color: #444444;">上面布局</div>
+        <!-- 下 -->
+        <div>
+            <div id="left" style="position: absolute;top: 60px;background-color: #444444;width: 195px;">下面左侧布局</div>
+            <div id="geometry" style="position: absolute;top: 60px;left: 200px;background-color: #444444;">下面右侧布局</div>
+        </div>
     </div>
 </template>
 
@@ -46,8 +54,10 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import matFolder from './matFolder.js'
  
-const width = window.innerWidth;
-const height = window.innerHeight;
+// const width = window.innerWidth;
+// const height = window.innerHeight;
+const width = window.innerWidth - 200;
+const height = window.innerHeight - 60;
 var urlDuck = 'https://a.amap.com/jsapi_demos/static/gltf/Duck.gltf';
 
 const scene = new Scene()
@@ -169,14 +179,28 @@ function render() {
 
     // controls.target 对应 相机观察目标 camera.lookAt()
     // console.log('controls.target',controls.target);
-
     renderer.render(scene, camera); //执行渲染操作
     requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
 }
 render();
 
+window.onresize = ()=>{
+    const width = window.innerWidth - 200; //canvas画布高度
+    const height = window.innerHeight - 60; //canvas画布宽度
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+}
+
 onMounted(()=>{
     document.getElementById('geometry').appendChild(renderer.domElement);
+
+    // const width = window.innerWidth - 200;
+    // const height = window.innerHeight - 60;
+    console.log(document.getElementById('left'));
+    document.getElementById('left').style.height = height + 'px';
+    document.getElementById('geometry').style.width = width + 'px';
+    document.getElementById('geometry').style.height = height + 'px';
 })
 </script>
 
