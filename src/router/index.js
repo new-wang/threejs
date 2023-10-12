@@ -2,7 +2,7 @@
  * @Author: new-wang
  * @Date: 2023-07-07 13:53:58
  * @LastEditors: new-wang
- * @LastEditTime: 2023-08-08 16:01:43
+ * @LastEditTime: 2023-10-12 15:48:18
  * @Description: 
  */
 import { createRouter, createWebHistory } from 'vue-router'
@@ -54,6 +54,11 @@ const router = createRouter({
       path:'/pbr',
       name:'pbr',
       component:() => import('../views/three/pbr.vue')
+    },
+    {
+      path:'/meshtest',
+      name:'meshtest',
+      component:() => import('../views/three/meshtest.vue')
     }
   ]
 })
