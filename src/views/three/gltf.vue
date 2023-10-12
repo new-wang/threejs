@@ -2,12 +2,16 @@
  * @Author: new-wang
  * @Date: 2023-07-12 15:46:01
  * @LastEditors: new-wang
- * @LastEditTime: 2023-08-01 17:21:42
+ * @LastEditTime: 2023-10-12 17:52:05
  * @Description: 加载外部三维模型gltf
 -->
 <template>
     <div>
         <div id="geometry"></div>
+
+        <div id="container">
+            <div id="per"></div>
+        </div>
     </div>
 </template>
 
@@ -48,6 +52,7 @@ model.name = 'duck'
 var urlCity = 'https://a.amap.com/jsapi_demos/static/gltf-online/shanghai/scene.gltf';
 var urlDuck = 'https://a.amap.com/jsapi_demos/static/gltf/Duck.gltf';
 var urlGltf = './gltf/untitled.gltf';
+// loader.load(模型路径,加载完成函数,加载过程函数)
 loader.load(urlDuck,function(gltf){
     console.log('gltf',gltf);
     gltf.scene.scale.set(5,5,5)
@@ -119,7 +124,21 @@ loader.load(urlDuck,function(gltf){
     // const mesh = gltf.scene.children[0]; //获取Mesh
     // mesh.material.map = texture;
 
+    // 加载完成，隐藏进度条
+    // document.getElementById("container").style.visibility ='hidden';
+    document.getElementById("container").style.display = 'none';
+    
+},function (xhr) {
+    // 控制台查看加载进度xhr
+    // 通过加载进度xhr可以控制前端进度条进度   
+    const percent = xhr.loaded / xhr.total;
+    // console.log('加载进度' + percent);
 
+    const percentDiv = document.getElementById("per");
+    percentDiv.style.width = percent * 400 + "px";
+    percentDiv.style.textIndent = percent * 400 + 5 + "px"; //缩进元素中的首行文本
+    // Math.floor:小数加载进度取整
+    percentDiv.innerHTML = Math.floor(percent * 100) + '%'; //进度百分比
 })
 scene.add(model)
 console.log('scene',scene)
@@ -226,9 +245,37 @@ render();
 
 onMounted(()=>{
     document.getElementById('geometry').appendChild(renderer.domElement);
+
+    const percentDiv = document.getElementById("per");// 获取进度条元素
+    percentDiv.style.width = 0.8*400 + "px";//进度条元素长度
+    percentDiv.style.textIndent = 0.8*400 + 5 +"px";//缩进元素中的首行文本
+    percentDiv.innerHTML =  "80%";//进度百分比
+
 })
 </script>
 
 <style lang="scss" scoped>
 
+</style>
+<style>
+/* 进度条css样式 */
+#container {
+    position: absolute;
+    width: 400px;
+    height: 16px;
+    top: 50%;
+    left:50%;
+    margin-left: -200px;
+    margin-top: -8px;
+    border-radius: 8px;           
+    border: 1px solid #009999;          
+    overflow: hidden;
+}
+#per {
+    height: 100%;
+    width: 0px;
+    background: #00ffff;
+    color: #fff;
+    line-height: 15px;        
+}
 </style>
